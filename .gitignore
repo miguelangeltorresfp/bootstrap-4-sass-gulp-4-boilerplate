@@ -101,7 +101,7 @@ Thumbs.db
 !.phpcs.xml.dist
 
 # CUSTOM
-/assets/js/vendor
-/assets/fonts/
+/src/js/vendor
+/src/fonts/
 /dist/
-assets/scss/bootstrap/
+/src/scss/bootstrap/
