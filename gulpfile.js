@@ -170,8 +170,9 @@ gulp.task(
     'vendor:build',
     () =>
       gulp
-        .src(['*.html', 'favicon.ico', 'assets/img/**'], { base: './' })
+        .src(['favicon.ico', 'assets/img/**'], { base: './' })
         .pipe(gulp.dest('dist')),
+    'replaceHtmlBlock',
   ),
 );
 
