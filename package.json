@@ -4,7 +4,8 @@
   "description": "A Bootstrap 4.1.3 boilerplate with sass and gulp 4",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "gulp": "gulp",
+    "gulp-dev": "gulp dev"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,7 @@
     "gulp",
     "4",
     "boilerplate",
-    "stater"
+    "starter"
   ],
   "author": "Jayesh Vachhani",
   "license": "MIT",
