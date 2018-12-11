@@ -19,7 +19,7 @@ const autoprefixer = require('gulp-autoprefixer');
 const browserSync = require('browser-sync').create();
 
 // Clean task
-gulp.task('clean', () => del(['dist', 'assets/css/app.css']));
+gulp.task('clean', () => del(['dist', 'src/css/app.css']));
 
 // Copy third party libraries from node_modules into /vendor
 gulp.task('vendor:js', () =>
@@ -30,7 +30,7 @@ gulp.task('vendor:js', () =>
       '!./node_modules/jquery/dist/core.js',
       './node_modules/popper.js/dist/umd/popper.*',
     ])
-    .pipe(gulp.dest('./assets/js/vendor')),
+    .pipe(gulp.dest('./src/js/vendor')),
 );
 
 // Copy font-awesome from node_modules into /fonts
@@ -43,7 +43,7 @@ gulp.task('vendor:fonts', () =>
       '!./node_modules/font-awesome/.*',
       '!./node_modules/font-awesome/*.{txt,json,md}',
     ])
-    .pipe(gulp.dest('./assets/fonts/font-awesome')),
+    .pipe(gulp.dest('./src/fonts/font-awesome')),
 );
 
 // vendor task
@@ -53,22 +53,22 @@ gulp.task('vendor', gulp.parallel('vendor:fonts', 'vendor:js'));
 gulp.task('vendor:build', () => {
   const jsStream = gulp
     .src([
-      './assets/js/vendor/bootstrap.min.js',
-      './assets/js/vendor/jquery.slim.min.js',
-      './assets/js/vendor/popper.min.js',
+      './src/js/vendor/bootstrap.min.js',
+      './src/js/vendor/jquery.slim.min.js',
+      './src/js/vendor/popper.min.js',
     ])
-    .pipe(gulp.dest('./dist/assets/js/vendor'));
+    .pipe(gulp.dest('./dist/src/js/vendor'));
   const fontStream = gulp
-    .src(['./assets/fonts/font-awesome/**/*.*'])
-    .pipe(gulp.dest('./dist/assets/fonts/font-awesome'));
+    .src(['./src/fonts/font-awesome/**/*.*'])
+    .pipe(gulp.dest('./dist/src/fonts/font-awesome'));
   return merge(jsStream, fontStream);
 });
 
-// Copy Bootstrap SCSS(SASS) from node_modules to /assets/scss/bootstrap
+// Copy Bootstrap SCSS(SASS) from node_modules to /src/scss/bootstrap
 gulp.task('bootstrap:scss', () =>
   gulp
     .src(['./node_modules/bootstrap/scss/**/*'])
-    .pipe(gulp.dest('./assets/scss/bootstrap')),
+    .pipe(gulp.dest('./src/scss/bootstrap')),
 );
 
 // Compile SCSS(SASS) files
@@ -76,7 +76,7 @@ gulp.task(
   'scss',
   gulp.series('bootstrap:scss', () =>
     gulp
-      .src(['./assets/scss/*.scss'])
+      .src(['./src/scss/*.scss'])
       .pipe(
         sass
           .sync({
@@ -85,7 +85,7 @@ gulp.task(
           .on('error', sass.logError),
       )
       .pipe(autoprefixer())
-      .pipe(gulp.dest('./assets/css')),
+      .pipe(gulp.dest('./src/css')),
   ),
 );
 
@@ -94,14 +94,14 @@ gulp.task(
   'css:minify',
   gulp.series('scss', () =>
     gulp
-      .src('./assets/css/app.css')
+      .src('./src/css/app.css')
       .pipe(cleanCSS())
       .pipe(
         rename({
           suffix: '.min',
         }),
       )
-      .pipe(gulp.dest('./dist/assets/css'))
+      .pipe(gulp.dest('./dist/src/css'))
       .pipe(browserSync.stream()),
   ),
 );
@@ -109,14 +109,14 @@ gulp.task(
 // Minify Js
 gulp.task('js:minify', () =>
   gulp
-    .src(['./assets/js/app.js'])
+    .src(['./src/js/app.js'])
     .pipe(uglify())
     .pipe(
       rename({
         suffix: '.min',
       }),
     )
-    .pipe(gulp.dest('./dist/assets/js'))
+    .pipe(gulp.dest('./dist/src/js'))
     .pipe(browserSync.stream()),
 );
 
@@ -126,8 +126,8 @@ gulp.task('replaceHtmlBlock', () =>
     .src(['*.html'])
     .pipe(
       htmlreplace({
-        js: 'assets/js/app.min.js',
-        css: 'assets/css/app.min.css',
+        js: 'src/js/app.min.js',
+        css: 'src/css/app.min.css',
       }),
     )
     .pipe(gulp.dest('dist/')),
@@ -141,18 +141,14 @@ gulp.task('dev', done => {
     },
   });
   gulp.watch(
-    [
-      'assets/scss/*.scss',
-      'assets/scss/**/*.scss',
-      '!assets/scss/bootstrap/**',
-    ],
+    ['src/scss/*.scss', 'src/scss/**/*.scss', '!src/scss/bootstrap/**'],
     gulp.series('css:minify', donecb => {
       browserSync.reload();
       donecb(); // Async callback for completion.
     }),
   );
   gulp.watch(
-    'assets/js/app.js',
+    'src/js/app.js',
     gulp.series('js:minify', donecb => {
       browserSync.reload();
       donecb();
@@ -170,7 +166,7 @@ gulp.task(
     'vendor:build',
     () =>
       gulp
-        .src(['favicon.ico', 'assets/img/**'], { base: './' })
+        .src(['favicon.ico', 'src/img/**'], { base: './' })
         .pipe(gulp.dest('dist')),
     'replaceHtmlBlock',
   ),
